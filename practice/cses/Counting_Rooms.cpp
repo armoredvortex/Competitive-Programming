@@ -50,11 +50,11 @@ int main()
                 continue;
             }
 
-            queue<pair<ll, ll>> s;
+            stack<pair<ll, ll>> s;
             s.push({i, j});
             while (!s.empty())
             {
-                auto e = s.front();
+                auto e = s.top();
                 s.pop();
                 visited[e.first][e.second] = true;
 
@@ -66,6 +66,16 @@ int main()
                 if (!visited[e.first][e.second + 1])
                 {
                     s.push({e.first, e.second + 1});
+                }
+
+                if (!visited[e.first - 1][e.second])
+                {
+                    s.push({e.first - 1, e.second});
+                }
+
+                if (!visited[e.first][e.second - 1])
+                {
+                    s.push({e.first, e.second - 1});
                 }
             }
 
