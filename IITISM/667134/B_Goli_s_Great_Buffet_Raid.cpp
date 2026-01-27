@@ -19,33 +19,38 @@ int main()
 
     ll n;
     cin >> n;
-
-    vector<ll> v(n);
+    vll a(n), b(n);
 
     for (ll i = 0; i < n; i++)
     {
-        cin >> v[i];
+        cin >> a[i];
     }
 
-    map<ll, ll> positions;
     for (ll i = 0; i < n; i++)
     {
-        positions[v[i]] = i;
+        cin >> b[i];
     }
 
-    ll ans = 1;
-    ll ptr = positions[1];
-
-    for (ll i = 2; i < n + 1; i++)
+    map<ll, ll> m;
+    for (ll i = 0; i < n; i++)
     {
-        auto e = positions[i];
-        if (e < ptr)
+        m[a[i]] = i;
+    }
+
+    ll left = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        auto e = b[i];
+        ll k = 0;
+        while (m[b[i]] != -1)
         {
-            // cerr << i << ' ';
-            ans++;
+            m[a[left]] = -1;
+            left++;
+            k++;
         }
-        ptr = e;
-    }
-    cout << ans;
-}
 
+        cout << k << ' ';
+    }
+
+    cout << '\n';
+}
