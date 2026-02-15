@@ -23,40 +23,38 @@ void solve()
         cin >> v[i];
     }
 
-    map<ll, vll> mp;
+    ll ans = 0;
+
+    // set<pair<ll, ll>> st;
     for (ll i = 0; i < n; i++)
     {
-        mp[v[i]].push_back(i);
-    }
+        ll e = v[i];
 
-    // cerr << mp;
-
-    ll ans = 0;
-    for (ll i = 1; i < n; i++)
-    {
-        for (ll j = 1; j <= sqrt(i); j++)
+        for (ll aj = 1; aj <= sqrt(n); aj++)
         {
-            if (i % j == 0)
+            ll possible_j = e * aj + i;
+            // cerr << "-->" << e << ' ' << possible_j << '\n';
+
+            if (possible_j < n && e * v[possible_j] == possible_j - i)
             {
-                ll f1 = j;
-                ll f2 = i / j;
+                // cerr << i << ' ' << possible_j << '\n';
+                ans++;
+            }
 
-                // cerr << f1 << ' ' << f2 << '\n';
-                for (ll p1 = 0; p1 < mp[f1].size(); p1++)
+            if (e > sqrt(n))
+            {
+                possible_j = i - e * aj;
+                // cerr << "-->" << e << ' ' << possible_j << '\n';
+
+                if (possible_j >= 0 && e * v[possible_j] == i - possible_j)
                 {
-                    for (ll p2 = 0; p2 < mp[f2].size(); p2++)
-                    {
-                        if (mp[f2][p2] - mp[f1][p1] == i)
-                        {
-
-                            ans++;
-                            cerr << mp[f2][p2] + 1 << ' ' << mp[f1][p1] + 1 << '\n';
-                        }
-                    }
+                    // cerr << i << ' ' << possible_j << '\n';
+                    ans++;
                 }
             }
         }
     }
+
     cout << ans << '\n';
     return;
 }
