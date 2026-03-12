@@ -25,27 +25,8 @@ int main()
         cin >> v[i];
     }
 
-    ll left = 0, right = 0;
-    ll ans = 0;
-    set<ll> bag;
-    while (right < n)
-    {
-        if (bag.find(v[right]) == bag.end())
-        {
-            bag.insert(v[right]);
-        }
-        else
-        {
-            while (v[left] != v[right])
-            {
-                bag.erase(v[left]);
-                left++;
-            }
-            left++;
-        }
-        ans += right - left + 1;
+    sort(v.begin(), v.end());
 
-        right++;
-    }
-    cout << ans << '\n';
+    cout << max(accumulate(v.begin(), v.end(), 0ll), 2 * v.back());
+    return 0;
 }

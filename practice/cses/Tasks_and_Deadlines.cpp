@@ -19,33 +19,21 @@ int main()
 
     ll n;
     cin >> n;
-    vll v(n);
+
+    vector<pair<ll, ll>> v(n);
     for (ll i = 0; i < n; i++)
     {
-        cin >> v[i];
+        cin >> v[i].first >> v[i].second;
     }
 
-    ll left = 0, right = 0;
+    sort(v.begin(), v.end());
+
     ll ans = 0;
-    set<ll> bag;
-    while (right < n)
+    ll t = 0;
+    for (auto e : v)
     {
-        if (bag.find(v[right]) == bag.end())
-        {
-            bag.insert(v[right]);
-        }
-        else
-        {
-            while (v[left] != v[right])
-            {
-                bag.erase(v[left]);
-                left++;
-            }
-            left++;
-        }
-        ans += right - left + 1;
-
-        right++;
+        t += e.first;
+        ans += e.second - t;
     }
-    cout << ans << '\n';
+    cout << ans;
 }

@@ -19,33 +19,30 @@ int main()
 
     ll n;
     cin >> n;
+
     vll v(n);
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
     }
 
-    ll left = 0, right = 0;
-    ll ans = 0;
-    set<ll> bag;
-    while (right < n)
+    ll ct = 0;
+
+    multiset<ll> st;
+    for (ll i = 0; i < n; i++)
     {
-        if (bag.find(v[right]) == bag.end())
+        auto e = v[i];
+
+        if (st.upper_bound(e) == st.end())
         {
-            bag.insert(v[right]);
+            st.insert(e);
+            ct++;
         }
         else
         {
-            while (v[left] != v[right])
-            {
-                bag.erase(v[left]);
-                left++;
-            }
-            left++;
+            st.erase(st.upper_bound(e));
+            st.insert(e);
         }
-        ans += right - left + 1;
-
-        right++;
     }
-    cout << ans << '\n';
+    cout << ct << '\n';
 }
