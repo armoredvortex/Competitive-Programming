@@ -22,30 +22,33 @@ int main()
     ll n, k;
     cin >> n >> k;
 
-    map<int, int> mp;
-    mp[1]++;
-
-    // cerr << factor(6);
-    for (ll i = 1; i <= k; i++)
+    vll ways(n + 1, 1);
+    ll ans = 0;
+    for (ll i = 0; i < k - 1; i++)
     {
-        map<int, int> nmp;
-        for (ll j = 1; j < n + 1; j++)
+        for (ll j = 1; j <= n; j++)
         {
-            for (int i = 1; i * j <= n; i++)
+            ll k = j;
+            ll temp = 0;
+
+            while (k <= n)
             {
-                nmp[i * j] = (nmp[i * j] + mp[j]) % MOD;
+                // cerr << k << ' ';
+                // ans = (ans + ways[k]) % (1000000009);
+                temp = (temp + ways[k]) % MOD;
+                k += j;
             }
+            ways[j] = temp;
+            // cerr << '\n';
         }
-        // cerr << nmp << '\n';
-        mp = nmp;
     }
 
-    ll total = 0;
-    for (auto e : mp)
+    for (ll i = 0; i < n; i++)
     {
-        total = (total + e.second) % MOD;
+        ans = (ans + ways[i + 1]) % MOD;
     }
-    cout << total << '\n';
+    cout << ans;
+
     return 0;
 }
 
