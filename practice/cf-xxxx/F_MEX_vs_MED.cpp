@@ -69,6 +69,7 @@ void solve()
             k2 = i + dright;
         }
 
+        
         ans += max(0ll, min(k1 + 1, n - k2));
         // cerr << max(0ll, min(k1 + 1, n - k2)) << '\n';
     }
