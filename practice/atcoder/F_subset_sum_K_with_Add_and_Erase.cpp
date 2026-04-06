@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+typedef vector<long long> vll;
+
+#ifndef ONLINE_JUDGE
+#include "debugging.h"
+#endif
+
+int main()
+{
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
+
+    ll q, k;
+    cin >> q >> k;
+
+    vector<pair<char, ll>> v(q);
+    for (ll i = 0; i < q; i++)
+    {
+        cin >> v[i].first >> v[i].second;
+    }
+
+    vector<ll> dp(5010);
+    for (ll i = 0; i < q; i++)
+    {
+        for (ll j = 0; j < 5000; j++)
+        {
+            if (v[i].first == '+')
+            {
+                dp[i + v[i].second] = 1 + dp[i];
+            } else {
+                
+            }
+        }
+    }
+}
