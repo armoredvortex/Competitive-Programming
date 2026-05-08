@@ -14,8 +14,8 @@ typedef vector<long long> vll;
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n, a, b;
+    cin >> n >> a >> b;
 
     vll v(n);
     for (ll i = 0; i < n; i++)
@@ -23,7 +23,31 @@ void solve()
         cin >> v[i];
     }
 
-    
+    vll dist(n);
+    dist[0] = v[0];
+    for (ll i = 1; i < n; i++)
+    {
+        dist[i] = v[i] - v[i - 1];
+    }
+
+    // cerr << dist;
+
+    ll ct = n;
+    ll ans = 0;
+    for (ll i = 0; i < n - 1; i++)
+    {
+        if ((ct - 1) * b > a)
+        {
+            ans += (a * dist[i] + b * dist[i]);
+        }
+        else
+        {
+            ans += ct * b * dist[i];
+        }
+        ct--;
+    }
+    ans += b * dist.back();
+    cout << ans << '\n';
 }
 
 int main()
