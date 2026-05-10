@@ -36,9 +36,28 @@ int main()
         ll k = lcm(a, b) / a;
         ll j = lcm(a, b) / b;
 
-        if (max(p, n) % max(k, j) == 0 && min(p, n) % min(k, j) == 0)
+        if (k == j)
         {
-            cout << "YES\n";
+            if (p == n)
+            {
+                cout << "YES\n";
+            }
+            else
+            {
+                cout << "NO\n";
+            }
+        }
+        else if (abs(p - n) % abs(k - j) == 0)
+        {
+            ll jj = abs(p - n) / abs(k - j);
+            if (max(p, n) - max(k, j) * jj < 0 || min(p, n) - min(k, j) * jj < 0)
+            {
+                cout << "NO\n";
+            }
+            else
+            {
+                cout << "YES\n";
+            }
         }
         else
         {
