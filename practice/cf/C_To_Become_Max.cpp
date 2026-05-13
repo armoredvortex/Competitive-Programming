@@ -14,41 +14,31 @@ typedef vector<long long> vll;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<ll, ll>> v(n);
+    ll n, k;
+    cin >> n >> k;
+    vll v(n);
     for (ll i = 0; i < n; i++)
     {
-        cin >> v[i].first >> v[i].second;
+        cin >> v[i];
     }
 
-    ll left = 0, right = 1e9;
-    ll mid, ans = -1;
-    while (left <= right)
+    ll ans = *max_element(all(v));
+    ll spent = 0;
+    for (ll i = n - 2; i >= 0; i--)
     {
-        mid = left + (right - left) / 2;
-
-        ll l_lim = 0, r_lim = 0;
-        ll flag = 1;
-        for (ll i = 0; i < n; i++)
+        if (v[i + 1] >= v[i])
         {
-            l_lim = max(l_lim - mid, v[i].first);
-            r_lim = min(r_lim + mid, v[i].second);
-
-            if (r_lim < v[i].first || l_lim > v[i].second)
+            if (spent < k)
             {
-                flag = 0;
-                break;
+                ll d = min(k - spent, v[i + 1] + 1 - v[i]);
+                spent += d;
+                v[i] += d;
+                ans = max(ans, v[i]);
             }
-        }
-        if (!flag)
-        {
-            left = mid + 1;
         }
         else
         {
-            ans = mid;
-            right = mid - 1;
+            spent = 0;
         }
     }
     cout << ans << '\n';

@@ -21,7 +21,7 @@ void solve()
 
     ll n = s.size();
 
-    ll left = 1, right = n * (n + 1) / 2;
+    ll left = 1, right = n;
     ll mid;
     ll ans = -1;
     while (left <= right)
@@ -40,21 +40,54 @@ void solve()
         }
     }
 
-    // cerr << ans << '\n';
     ll x = ans - 1;
     // cerr << x << '\n';
-
+    left = 0;
     stack<char> st;
     ll ct = 0;
-    ll ptr = 0;
-    while (ptr < n - 1 && ct != x)
+    while (ct != x)
     {
-        if (s[ptr + 1] > s[ptr])
+        if (st.empty())
         {
-            st.push(s[ptr]);
-            ptr++;
+            st.push(s[left]);
+            left++;
+        }
+        else
+        {
+            while (left < s.size() && st.top() <= s[left])
+            {
+                st.push(s[left]);
+                left++;
+            }
+
+            if (left >= n)
+            {
+                st.pop();
+                ct++;
+            }
+            else
+            {
+                st.pop();
+                ct++;
+            }
         }
     }
+
+    string res;
+    while (!st.empty())
+    {
+        res += st.top();
+        st.pop();
+    }
+    reverse(res.begin(), res.end());
+    while (left < s.size())
+    {
+        res += s[left];
+        left++;
+    }
+
+    ll kkk = (ans - 1) * n - (ans - 1) * (ans - 2) / 2;
+    cout << res[pos - kkk - 1];
 }
 
 int main()

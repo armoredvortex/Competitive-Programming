@@ -16,50 +16,70 @@ void solve()
 {
     ll n;
     cin >> n;
-
-    vector<ll> v(n);
+    vll v(n);
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
     }
 
-    // precompute
-    ll JJ = 5;
-    vector<vector<ll>> s(JJ, vector<ll>(n + 1, 0));
-    for (ll i = 0; i < JJ; i++)
+    const ll BITS = 32;
+    vector<vector<ll>> nxt_one(BITS, vector<ll>(n));
+    for (ll i = 0; i < BITS; i++)
     {
-        for (ll j = 0; j < n; j++)
+        if (v.back() & (1 << i))
         {
-            auto e = v[j];
-            s[i][j + 1] = s[i][j];
-            if ((e & (1 << i)))
+            nxt_one[i][n - 1] = n - 1;
+        }
+        else
+        {
+            nxt_one[i][n - 1] = LONG_LONG_MIN;
+        }
+        for (ll j = n - 2; j >= 0; j--)
+        {
+            if (v[j] & (1 << i))
             {
-                s[i][j + 1]++;
+                if (nxt_one[i][j + 1] == LONG_LONG_MIN)
+                {
+                    nxt_one[i][j] = j;
+                }
+                else
+                {
+                    nxt_one[i][j] = nxt_one[i][j + 1];
+                }
+            }
+            else
+            {
+                nxt_one[i][j] = LONG_LONG_MIN;
             }
         }
     }
-    cerr << s;
-    // for (auto e : s)
-    // {
-    //     for (auto f : e)
-    //     {
-    //         cerr << f << ' ';
-    //     }
-    //     cerr << '\n';
-    // }
 
+    // cerr << nxt_one;
     ll q;
     cin >> q;
-    for (ll i = 0; i < q; i++)
+    while (q--)
     {
         ll l, k;
         cin >> l >> k;
-
-        ll m = -1;
-        // for (ll i = 0; i < __countl_zero(k); i++)
-        // {
-        // }
+        l--;
+        ll mx = n - 1;
+        ll ans = LONG_LONG_MIN;
+        for (ll i = BITS - 1; i >= 0; i--)
+        {
+            if (k & (1 << i))
+            {
+                mx = min(mx, nxt_one[i][l]);
+            }
+            else
+            {
+                ans = max(ans, min(mx, nxt_one[i][l]));
+            }
+            // cerr << mx << '-' << ans << '\n';
+        }
+        ans = max(ans, mx);
+        cout << max(-1ll, ans + 1) << ' ';
     }
+    cout << '\n';
 }
 
 int main()

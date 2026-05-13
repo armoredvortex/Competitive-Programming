@@ -28,24 +28,53 @@ void solve()
         if (n % i == 0)
         {
             factors.push_back(i);
-        }
-        if (i != n / i)
-        {
-            factors.push_back(n / i);
-        }
-    }
-
-    ll score = 0;
-    for (auto e : factors)
-    {
-        for (ll i = 0; i < e; i++)
-        {
-            for (ll j = 0; j < n / e; j++)
+            if (n / i != i)
             {
-                ll idx = j * (e) + i;
+                factors.push_back(n / i);
             }
         }
     }
+
+    ll ans = 0;
+    for (auto e : factors)
+    {
+        if (e == n)
+        {
+            ans++;
+            continue;
+        }
+
+        vll ggs;
+        for (ll i = 0; i < e; i++)
+        {
+            ll g = abs(v[i + e] - v[i]);
+            ll j = i;
+            while (j + e < n)
+            {
+                g = gcd(g, abs(v[j + e] - v[j]));
+                j += e;
+            }
+            if (g)
+            {
+                ggs.push_back(g);
+            }
+        }
+        if (ggs.size() == 0)
+        {
+            ans++;
+            continue;
+        }
+        ll k = ggs[0];
+        for (auto e : ggs)
+        {
+            k = gcd(k, e);
+        }
+        if (k >= 2)
+        {
+            ans++;
+        }
+    }
+    cout << ans << '\n';
 }
 
 int main()
