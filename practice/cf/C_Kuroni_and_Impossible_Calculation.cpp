@@ -17,26 +17,29 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    int n;
-    cin >> n;
-    vll v(n);
+    int n, m;
+    cin >> n >> m;
+
+    vector<int> v(n);
     for (int i = 0; i < n; i++)
     {
         cin >> v[i];
     }
-    sort(v.begin(), v.end());
-    if (accumulate(v.begin(), v.end(), 0ll) % 2 != 0)
-    {
-        cout << "NO";
-        return 0;
-    }
 
-    if (accumulate(v.begin(), v.end() - 1, 0ll) < v.back())
+    if (n <= m)
     {
-        cout << "NO";
-        return 0;
+        int ans = 1;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                ans = ((ans % m) * (abs(v[j] - v[i]) % m)) % m;
+            }
+        }
+        cout << ans;
     }
-
-    cout << "YES";
-    return 0;
+    else
+    {
+        cout << 0 << '\n';
+    }
 }
