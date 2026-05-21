@@ -14,46 +14,36 @@ typedef vector<long long> vll;
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-
+    ll n;
+    cin >> n;
     vll v(n);
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
     }
 
-    ll ans = 0;
-    for (ll i = 0; i < n; i++)
+    ll ans = v[0];
+    ll ansl = 0, ansr = 0;
+    pair<ll, ll> mn = {v[0], 0}, mx = {v[0], 0};
+    for (ll i = 1; i < n; i++)
     {
-        ans = max(ans, v[i]);
-        ll ptr = i + 1;
-        ll req = v[i];
-        int flag = 1;
-        if (ptr == n && req)
+        if (v[i] < 0)
         {
-            flag = 0;
+            pair<ll, ll> oldmn = mn;
+            mn.first = mx.first * v[i];
+            if(n)
         }
-        while (ptr < n && v[ptr] < req)
+        else if (v[i] == 0)
         {
-            if (req - v[ptr] <= k)
-            {
-                k -= req - v[ptr];
-                req--;
-                ptr++;
-            }
-            else
-            {
-                flag = 0;
-                break;
-            }
+            mn = {1, i};
+            mx = {1, i};
         }
-        if (flag)
+        else
         {
-            ans = max(ans, v[i] + 1);
+            mn.first *= v[i];
+            mx.first *= v[i];
         }
     }
-    cout << ans << '\n';
 }
 
 int main()

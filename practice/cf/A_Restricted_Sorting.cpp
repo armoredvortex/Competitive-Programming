@@ -14,46 +14,39 @@ typedef vector<long long> vll;
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-
-    vll v(n);
+    ll n;
+    cin >> n;
+    vll v(n), vs(n);
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
+        vs[i] = v[i];
     }
 
-    ll ans = 0;
+    sort(vs.begin(), vs.end());
+
+    vll unsorted;
     for (ll i = 0; i < n; i++)
     {
-        ans = max(ans, v[i]);
-        ll ptr = i + 1;
-        ll req = v[i];
-        int flag = 1;
-        if (ptr == n && req)
+        if (v[i] != vs[i])
         {
-            flag = 0;
-        }
-        while (ptr < n && v[ptr] < req)
-        {
-            if (req - v[ptr] <= k)
-            {
-                k -= req - v[ptr];
-                req--;
-                ptr++;
-            }
-            else
-            {
-                flag = 0;
-                break;
-            }
-        }
-        if (flag)
-        {
-            ans = max(ans, v[i] + 1);
+            unsorted.push_back(vs[i]);
         }
     }
+
+    if (!unsorted.size())
+    {
+        cout << -1 << '\n';
+        return;
+    }
+    ll ans = -1;
+    for (ll i = 0; i < unsorted.size() - 1; i++)
+    {
+        ans = 
+    }
+
     cout << ans << '\n';
+    return;
 }
 
 int main()
