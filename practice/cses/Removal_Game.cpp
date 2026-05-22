@@ -17,31 +17,33 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, k;
-    cin >> n >> k;
-
+    ll n;
+    cin >> n;
     vll v(n);
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
     }
 
-    map<ll, ll> mp;
-    ll left = 0, right = 0;
-    ll ans = 0;
-    while (right < n)
+    vector<vector<ll>> dp(n, vector<ll>(n));
+    for (ll i = 0; i < n; i++)
     {
-        mp[v[right]]++;
-        while (mp.size() > k)
-        {
-            if (--mp[v[left]] == 0)
-            {
-                mp.erase(v[left]);
-            }
-            left++;
-        }
-        ans += right - left + 1;
-        right++;
+        dp[i][i] = v[i];
     }
-    cout << ans;
+    for (ll i = 0; i < n - 1; i++)
+    {
+        dp[i][i + 1] = max(v[i], v[i + 1]);
+    }
+    for (ll k = 2; k < n; k++)
+    {
+        for (ll i = 0; i + k < n; i++)
+        {
+            int j = i + k;
+            dp[i][j] = max(v[i] + min(dp[i + 2][j], dp[i + 1][j - 1]), v[j] + min(dp[i + 1][j - 1], dp[i][j - 2]));
+        }
+    }
+
+    // cerr << dp;
+
+    cout << dp[0][n - 1];
 }

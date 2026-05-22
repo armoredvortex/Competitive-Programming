@@ -17,31 +17,23 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, k;
-    cin >> n >> k;
+    int n;
+    cin >> n;
 
     vll v(n);
-    for (ll i = 0; i < n; i++)
+    map<ll, ll> mp;
+    for (int i = 0; i < n; i++)
     {
         cin >> v[i];
+        mp[v[i]]++;
     }
 
-    map<ll, ll> mp;
-    ll left = 0, right = 0;
-    ll ans = 0;
-    while (right < n)
+    ll ans = 1;
+    const ll MOD = 1e9 + 7;
+    for (auto e : mp)
     {
-        mp[v[right]]++;
-        while (mp.size() > k)
-        {
-            if (--mp[v[left]] == 0)
-            {
-                mp.erase(v[left]);
-            }
-            left++;
-        }
-        ans += right - left + 1;
-        right++;
+        ans = ((ans % MOD) * ((e.second + 1) % MOD)) % MOD;
     }
-    cout << ans;
+
+    cout << ans - 1;
 }

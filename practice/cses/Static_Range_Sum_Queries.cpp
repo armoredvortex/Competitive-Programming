@@ -17,8 +17,8 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, k;
-    cin >> n >> k;
+    ll n, q;
+    cin >> n >> q;
 
     vll v(n);
     for (ll i = 0; i < n; i++)
@@ -26,22 +26,16 @@ int main()
         cin >> v[i];
     }
 
-    map<ll, ll> mp;
-    ll left = 0, right = 0;
-    ll ans = 0;
-    while (right < n)
+    vll pre(n + 1, 0);
+    for (ll i = 0; i < n; i++)
     {
-        mp[v[right]]++;
-        while (mp.size() > k)
-        {
-            if (--mp[v[left]] == 0)
-            {
-                mp.erase(v[left]);
-            }
-            left++;
-        }
-        ans += right - left + 1;
-        right++;
+        pre[i + 1] = pre[i] + v[i];
     }
-    cout << ans;
+
+    while (q--)
+    {
+        ll l, r;
+        cin >> l >> r;
+        cout << pre[r] - pre[l - 1] << '\n';
+    }
 }
