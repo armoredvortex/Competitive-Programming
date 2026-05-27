@@ -12,24 +12,27 @@ typedef vector<long long> vll;
 #include "debugging.h"
 #endif
 
-vector<ll> visited;
-ll found = -1;
-
-void dfs(ll i, vector<vector<ll>> &adj)
+bool dfs(int node, vector<vector<int>> &adj, int parent, vector<int> &visited, vector<int> &path)
 {
-    visited[i] = 1;
-    for (auto e : adj[i])
+    visited[node] = 1;
+    path.push_back(node);
+    for (auto e : adj[node])
     {
-        if (visited[e])
+        if (e != parent)
         {
-            found = e;
-            return;
-        }
-        else
-        {
-            dfs(e, adj);
+            if (visited[e] == 1)
+            {
+                path.push_back(e);
+                return true;
+            }
+            if (dfs(e, adj, node, visited, path))
+            {
+                return true;
+            }
         }
     }
+    path.pop_back();
+    return false;
 }
 
 int main()
@@ -37,37 +40,56 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, m;
+    int n, m;
     cin >> n >> m;
-
-    vector<vector<ll>> adj(n);
-
-    for (ll i = 0; i < m; i++)
+    vector<vector<int>> adj(n);
+    for (int i = 0; i < m; i++)
     {
-        ll u, v;
+        int u, v;
         cin >> u >> v;
-        u--, v--;
+        u--;
+        v--;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
 
-    visited.assign(n, 0);
-
-    for (ll i = 0; i < n; i++)
+    vector<int> visited(n, 0);
+    vector<int> path;
+    int flag = 0;
+    for (int i = 0; i < n; i++)
     {
-        if (!visited[i])
+        if (visited[i])
+            continue;
+
+        path = {};
+        if (dfs(i, adj, -1, visited, path))
         {
-            dfs(i, adj);
+            flag = 1;
+            break;
         }
     }
 
-    if (found == -1)
+    if (!flag)
     {
         cout << "IMPOSSIBLE\n";
+        return 0;
     }
-    else
+    // cerr << path;
+
+    vector<int> ans;
+    ans.push_back(path.back());
+    for (int i = path.size() - 2; i >= 0; i--)
     {
-        dfs2(found, adj);
+        ans.push_back(path[i]);
+        if (path[i] == ans[0])
+        {
+            break;
+        }
     }
 
+    cout << ans.size() << '\n';
+    for (auto e : ans)
+    {
+        cout << e + 1 << ' ';
+    }
 }

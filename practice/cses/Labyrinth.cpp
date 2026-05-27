@@ -8,115 +8,117 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 typedef vector<long long> vll;
 
-// #ifndef ONLINE_JUDGE
-// #include "debugging.h"
-// #endif
-
-vector<vector<int>> visited;
-string path, minp;
-ll minsz = LONG_LONG_MAX;
-ll n, m;
-pair<int, int> startp, endp;
-
-void dfs(int x, int y, vector<vector<char>> &arr)
-{
-    if (x < 0 || x >= n || y < 0 || y >= m)
-    {
-        return;
-    }
-
-    if (visited[x][y])
-    {
-        return;
-    }
-    if (arr[x][y] == 'B')
-    {
-        if (path.size() < minsz)
-        {
-            minp = path;
-            minsz = path.size();
-        }
-        return;
-    }
-    visited[x][y] = 1;
-
-    path += 'R';
-    dfs(x, y + 1, arr);
-    path.pop_back();
-
-    path += 'L';
-    dfs(x, y - 1, arr);
-    path.pop_back();
-
-    path += 'U';
-    dfs(x - 1, y, arr);
-    path.pop_back();
-
-    path += 'D';
-    dfs(x + 1, y, arr);
-    path.pop_back();
-
-    visited[x][y] = 0;
-
-    return;
-}
-
-void solve()
-{
-    cin >> n >> m;
-
-    vector<vector<char>> arr(n, vector<char>(m, 0));
-    visited.resize(n);
-    for (ll i = 0; i < n; i++)
-    {
-        visited[i].resize(m, 0);
-    }
-
-    for (ll i = 0; i < n; i++)
-    {
-        for (ll j = 0; j < m; j++)
-        {
-            cin >> arr[i][j];
-            if (arr[i][j] == 'A')
-            {
-                startp = {i, j};
-            }
-            if (arr[i][j] == 'B')
-            {
-                endp = {i, j};
-            }
-            if (arr[i][j] == '#')
-            {
-                visited[i][j] = 1;
-            }
-        }
-    }
-
-    // cerr << startp << ' ' << endp << '\n';
-    // cerr << visited << '\n';
-
-    dfs(startp.first, startp.second, arr);
-
-    if (!minp.size())
-    {
-        cout << "NO\n";
-        return;
-    }
-    else
-    {
-        cout << "YES\n"
-             << minp.size() << '\n'
-             << minp << '\n';
-        return;
-    }
-}
+#ifndef ONLINE_JUDGE
+#include "debugging.h"
+#endif
 
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    int t = 1;
-    while (t--)
-        solve();
+    ll n, m;
+    cin >> n >> m;
+
+    vector<vector<char>> v(n, vector<char>(m));
+    vector<vector<char>> prev(n, vector<char>(m, 0));
+    pair<int, int> start, finish;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin >> v[i][j];
+            if (v[i][j] == 'A')
+            {
+                start = {i, j};
+                prev[i][j] = -1;
+            }
+            else if (v[i][j] == 'B')
+            {
+                finish = {i, j};
+            }
+            else if (v[i][j] == '#')
+            {
+                prev[i][j] = -1;
+            }
+        }
+    }
+
+    queue<pair<int, int>> q;
+    q.push(start);
+
+    int flag = 1;
+    while (!q.empty())
+    {
+        if (!flag)
+        {
+            break;
+        }
+        int sz = q.size();
+        for (int i = 0; i < sz; i++)
+        {
+            auto e = q.front();
+            q.pop();
+            if (e == finish)
+            {
+                flag = 0;
+                break;
+            }
+            if (e.first + 1 < n && prev[e.first + 1][e.second] == 0)
+            {
+                prev[e.first + 1][e.second] = 'D';
+                q.push({e.first + 1, e.second});
+            }
+            if (e.first - 1 >= 0 && prev[e.first - 1][e.second] == 0)
+            {
+                prev[e.first - 1][e.second] = 'U';
+                q.push({e.first - 1, e.second});
+            }
+            if (e.second + 1 < m && prev[e.first][e.second + 1] == 0)
+            {
+                prev[e.first][e.second + 1] = 'R';
+                q.push({e.first, e.second + 1});
+            }
+            if (e.second - 1 >= 0 && prev[e.first][e.second - 1] == 0)
+            {
+                prev[e.first][e.second - 1] = 'L';
+                q.push({e.first, e.second - 1});
+            }
+        }
+    }
+
+    if (flag)
+    {
+        cout << "NO\n";
+        return 0;
+    }
+    string ans;
+    pair<int, int> it = finish;
+    while (it != start)
+    {
+        // cerr << it << '\n';
+        char c = prev[it.first][it.second];
+        ans += c;
+        if (c == 'U')
+        {
+            it.first++;
+        }
+        else if (c == 'D')
+        {
+            it.first--;
+        }
+        else if (c == 'R')
+        {
+            it.second--;
+        }
+        else if (c == 'L')
+        {
+            it.second++;
+        }
+    }
+    reverse(ans.begin(), ans.end());
+    cout << "YES\n";
+    cout << ans.size() << '\n';
+    cout << ans;
+    return 0;
 }
