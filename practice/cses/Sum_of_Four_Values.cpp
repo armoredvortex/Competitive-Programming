@@ -17,38 +17,51 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, x;
-    cin >> n >> x;
+    ll n, k;
+    cin >> n >> k;
 
     vector<pair<ll, ll>> v(n);
-
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i].first;
-        v[i].second = i;
+        v[i].second = i + 1;
     }
 
     sort(v.begin(), v.end());
-
-    for (ll i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        for (ll j = i + 1; j < n; j++)
+        for (int j = i + 1; j < n; j++)
         {
-            for (ll k = j + 1; k < n; k++)
+            int left = j + 1, right = n - 1;
+            while (left < right)
             {
-
-                ll req = x - v[i].first - v[j].first - v[k].first;
-                pair<ll, ll> p = {req, -1};
-                auto it = lower_bound(v.begin() + j + 1, v.end(), p);
-
-                if (it != v.end() && (*it).first == req)
+                if (left == i || left == j)
                 {
-                    cout << v[i].second + 1 << ' ' << v[j].second + 1 << ' ' << v[k].second + 1 << ' ' << (*it).second + 1;
+                    left++;
+                }
+
+                if (right == i || right == j)
+                {
+                    right--;
+                }
+
+                ll req = k - v[i].first - v[j].first;
+                ll sum = v[left].first + v[right].first;
+                if (sum == req)
+                {
+                    cout << v[i].second << ' ' << v[j].second << ' ' << v[left].second << ' ' << v[right].second;
                     return 0;
+                }
+                else if (sum > req)
+                {
+                    right--;
+                }
+                else
+                {
+                    left++;
                 }
             }
         }
     }
     cout << "IMPOSSIBLE";
-    return 0;
 }
