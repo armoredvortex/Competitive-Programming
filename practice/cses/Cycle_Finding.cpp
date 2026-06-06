@@ -17,15 +17,26 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll k;
-    cin >> k;
+    int n, m;
+    cin >> n >> m;
 
-    if (k == 1)
+    vector<vector<long long>> dist(n, vector<long long>(n, LONG_LONG_MAX / 10));
+    for (int i = 0; i < m; i++)
     {
-        cout << 0;
+        long long u, v, w;
+        cin >> u >> v >> w;
+        u--;
+        v--;
+        dist[u][v] = min(dist[u][v], w);
+        dist[v][u] = min(dist[v][u], w);
     }
-    else if (k == 2)
+    for (int i = 0; i < n; i++)
     {
+        dist[i][i] = 0;
     }
-    ll total = (k * k) * (k * k - 1) / 2;
+
+    for (int k = 0; k < n; k++)
+    {
+        for()
+    }
 }

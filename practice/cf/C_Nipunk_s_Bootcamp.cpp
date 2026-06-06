@@ -17,15 +17,8 @@ int main()
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll k;
-    cin >> k;
+    ll n, k;
+    cin >> n >> k;
 
-    if (k == 1)
-    {
-        cout << 0;
-    }
-    else if (k == 2)
-    {
-    }
-    ll total = (k * k) * (k * k - 1) / 2;
+    
 }
