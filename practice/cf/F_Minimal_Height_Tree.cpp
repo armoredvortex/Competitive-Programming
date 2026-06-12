@@ -12,21 +12,32 @@ typedef vector<long long> vll;
 #include "debugging.h"
 #endif
 
+void solve()
+{
+    ll n;
+    cin >> n;
+    vll v(n);
+    for (ll i = 0; i < n; i++)
+    {
+        cin >> v[i];
+    }
+
+    ll ans = 0;
+    for (ll i = 0; i < n - 1; i++)
+    {
+        if (v[i + 1] < v[i])
+            ans++;
+    }
+    cout << ans + 1 << '\n';
+}
+
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, m;
-    cin >> n >> m;
-    vector<vector<int>> dp(m + 1, vector<int>(1 << n, 0));
-
-    dp[0][(1 << n) - 1] = 1;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < (1 << n); j++)
-        {
-            if(dp[i-1][])
-        }
-    }
+    int t;
+    cin >> t;
+    while (t--)
+        solve();
 }
