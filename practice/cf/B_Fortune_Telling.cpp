@@ -12,22 +12,35 @@ typedef vector<long long> vll;
 #include "debugging.h"
 #endif
 
+void solve()
+{
+    ll n, x, y;
+    cin >> n >> x >> y;
+    vll v(n);
+    ll a = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        cin >> v[i];
+        a ^= v[i];
+    }
+
+    if (((x % 2 == y % 2) && (a % 2 == 0)) || ((x % 2 != y % 2) && (a % 2 == 1)))
+    {
+        cout << "Alice\n";
+    }
+    else
+    {
+        cout << "Bob\n";
+    }
+}
+
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, k;
-    cin >> n >> k;
-    vll v(n);
-    for (ll i = 0; i < n; i++)
-    {
-        cin >> v[i];
-    }
-
-    for (ll i = 0; i < n; i++)
-    {
-        /* code */
-    }
-    
+    int t;
+    cin >> t;
+    while (t--)
+        solve();
 }

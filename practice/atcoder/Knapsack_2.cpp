@@ -12,22 +12,39 @@ typedef vector<long long> vll;
 #include "debugging.h"
 #endif
 
+const int N = 1e5;
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n, k;
-    cin >> n >> k;
-    vll v(n);
+    ll n, w;
+    cin >> n >> w;
+    vector<pair<ll, ll>> v(n);
     for (ll i = 0; i < n; i++)
     {
-        cin >> v[i];
+        cin >> v[i].first >> v[i].second;
     }
 
+    vector<ll> val(N + 10, 1e15);
+    val[0] = 0;
     for (ll i = 0; i < n; i++)
     {
-        /* code */
+        for (ll j = N; j >= v[i].second; j--)
+        {
+            val[j] = min(val[j], val[j - v[i].second] + v[i].first);
+        }
     }
-    
+
+    // cerr << val;
+    ll ans = -1;
+    for (ll i = 0; i < val.size(); i++)
+    {
+        if (val[i] <= w)
+        {
+            ans = i;
+        }
+    }
+
+    cout << ans;
 }

@@ -14,36 +14,81 @@ typedef vector<long long> vll;
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    vll v(n);
-    for (ll i = 0; i < n; i++)
-    {
-        cin >> v[i];
-    }
+    vi a(n);
+    for (int i = 0; i < n; i++)
+        cin >> a[i];
 
-    ll ans = v[0];
-    ll ansl = 0, ansr = 0;
-    pair<ll, ll> mn = {v[0], 0}, mx = {v[0], 0};
-    for (ll i = 1; i < n; i++)
+    int max_twos = 0;
+    int best_l = n, best_r = 0;
+
+    auto count_twos = [&](int L, int R)
     {
-        if (v[i] < 0)
+        if (L > R)
+            return 0;
+        int count = 0;
+        for (int k = L; k <= R; k++)
         {
-            pair<ll, ll> oldmn = mn;
-            mn.first = mx.first * v[i];
-            if(n)
+            if (abs(a[k]) == 2)
+                count++;
         }
-        else if (v[i] == 0)
+        return count;
+    };
+
+    for (int i = 0; i < n; i++)
+    {
+        if (a[i] == 0)
+            continue;
+
+        int j = i;
+        int negs = 0;
+        int first_neg = -1, last_neg = -1;
+
+        while (j < n && a[j] != 0)
         {
-            mn = {1, i};
-            mx = {1, i};
+            if (a[j] < 0)
+            {
+                negs++;
+                if (first_neg == -1)
+                    first_neg = j;
+                last_neg = j;
+            }
+            j++;
+        }
+
+        if (negs % 2 == 0)
+        {
+            int twos = count_twos(i, j - 1);
+            if (twos > max_twos)
+            {
+                max_twos = twos;
+                best_l = i;
+                best_r = n - j;
+            }
         }
         else
         {
-            mn.first *= v[i];
-            mx.first *= v[i];
+            int twos1 = count_twos(first_neg + 1, j - 1);
+            if (twos1 > max_twos)
+            {
+                max_twos = twos1;
+                best_l = first_neg + 1;
+                best_r = n - j;
+            }
+            int twos2 = count_twos(i, last_neg - 1);
+            if (twos2 > max_twos)
+            {
+                max_twos = twos2;
+                best_l = i;
+                best_r = n - last_neg;
+            }
         }
+
+        i = j - 1;
     }
+
+    cout << best_l << ' ' << best_r << '\n';
 }
 
 int main()

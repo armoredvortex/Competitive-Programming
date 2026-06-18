@@ -1,76 +1,101 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define rep(i, a, b) for (int i = a; i < (b); ++i)
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef vector<int> vi;
-typedef vector<long long> vll;
-
-#ifndef ONLINE_JUDGE
-#include "debugging.h"
-#endif
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
     string s;
     cin >> s;
 
-    map<char, int> mp;
-    for (ll i = 0; i < n; i++)
+    vector<pair<int, char>> freq(26);
+    for (int i = 0; i < 26; ++i)
     {
-        mp[s[i]]++;
+        freq[i] = {0, 'a' + i};
+    }
+    for (char c : s)
+    {
+        freq[c - 'a'].first++;
     }
 
-    vll factors;
-    for (ll i = 1; i < sqrt(n); i++)
+    sort(freq.rbegin(), freq.rend());
+
+    int min_changes = 1e9;
+    int best_k = -1;
+
+    for (int k = 1; k <= 26; ++k)
     {
-        if (n % i == 0)
+        if (n % k == 0)
         {
-            factors.push_back(i);
-            if (n / i != i)
+            int c = n / k;
+            int kept = 0;
+
+            for (int i = 0; i < k; ++i)
             {
-                factors.push_back(n / i);
+                kept += min(freq[i].first, c);
+            }
+
+            int changes = n - kept;
+            if (changes < min_changes)
+            {
+                min_changes = changes;
+                best_k = k;
             }
         }
     }
 
-    ll ans = INT_MAX;
-    ll mine = -1;
-    for (auto e : factors)
-    {
-        if (e <= 26)
-        {
-            if (abs(e - (ll)mp.size()) < ans)
-            {
-                ans = abs(e - (ll)mp.size());
-                mine = e;
-            }
-        }
-    }
-    cout << ans << '\n';
-    cerr << mine << '\n';
+    int c = n / best_k;
+    vector<int> target_freq(26, 0);
 
-    ll e = n / mine;
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < best_k; ++i)
     {
-        if(mp[s[i]] < e){
-                        
+        target_freq[freq[i].second - 'a'] = c;
+    }
+
+    vector<int> current_kept(26, 0);
+    string t = s;
+    vector<int> replace_indices;
+
+    for (int i = 0; i < n; ++i)
+    {
+        char ch = s[i];
+        if (target_freq[ch - 'a'] > 0 && current_kept[ch - 'a'] < target_freq[ch - 'a'])
+        {
+            current_kept[ch - 'a']++;
+        }
+        else
+        {
+            replace_indices.push_back(i);
         }
     }
-    
+
+    int char_idx = 0;
+    for (int idx : replace_indices)
+    {
+        while (char_idx < best_k && current_kept[freq[char_idx].second - 'a'] == c)
+        {
+            char_idx++;
+        }
+
+        char needed_char = freq[char_idx].second;
+        t[idx] = needed_char;
+        current_kept[needed_char - 'a']++;
+    }
+
+    cout << min_changes << '\n';
+    cout << t << '\n';
 }
 
 int main()
 {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
     int t;
     cin >> t;
     while (t--)
+    {
         solve();
+    }
+    return 0;
 }

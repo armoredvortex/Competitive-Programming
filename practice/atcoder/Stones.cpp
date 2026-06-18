@@ -24,10 +24,27 @@ int main()
     {
         cin >> v[i];
     }
-
-    for (ll i = 0; i < n; i++)
+    vll dp(k + 1, 0);
+    for (ll i = 0; i < k + 1; i++)
     {
-        /* code */
+        if (dp[i] == 0)
+        {
+            for (ll j = 0; j < n; j++)
+            {
+                if (i + v[j] < k + 1)
+                {
+                    dp[i + v[j]] = 1;
+                }
+            }
+        }
     }
-    
+
+    if (dp.back() == 0)
+    {
+        cout << "Second";
+    }
+    else
+    {
+        cout << "First";
+    }
 }

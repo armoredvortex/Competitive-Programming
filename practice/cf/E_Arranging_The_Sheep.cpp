@@ -19,75 +19,93 @@ void solve()
     string s;
     cin >> s;
 
-    int sheep = count(all(s), '*');
-
-    vector<int> pre(n + 1, 0), prec(n + 1, 0), post(n + 1, 0), postc(n + 1, 0);
-    for (int i = 0; i < n; i++)
+    ll ct = count(s.begin(), s.end(), '*');
+    ll a = 0, b = 0, c = 0, d = 0;
+    for (ll i = 0; i < n; i++)
     {
         if (s[i] == '*')
         {
-            pre[i + 1] = pre[i] + i;
-            prec[i + 1] = pre[i] + 1;
+            d += i;
+        }
+    }
+    ll left = 0, right = 0;
+    queue<ll> q1, q2;
+    for (right = 0; right < ct; right++)
+    {
+        if (s[right] == '*')
+        {
+            d -= right;
+        }
+        else if (s[right] == '.')
+        {
+            c += right;
+            q2.push(right);
+        }
+    }
+
+    ll ans = d - c;
+    while (right < n)
+    {
+        if (s[left] == '.' && s[right] == '.')
+        {
+            q2.push(right);
+            c += right;
+            if (q1.size())
+            {
+                b -= q1.front();
+                q1.pop();
+                b += q2.front();
+                q1.push(q2.front());
+                c -= q2.front();
+                q2.pop();
+            }
+            else
+            {
+                c -= q2.front();
+                q2.pop();
+            }
+        }
+        else if (s[left] == '.' && s[right] == '*')
+        {
+            if (q1.size())
+            {
+                b -= q1.front();
+                q1.pop();
+                b += q2.front();
+                q1.push(q2.front());
+                c -= q2.front();
+                q2.pop();
+            }
+            else
+            {
+                c -= q2.front();
+                q2.pop();
+            }
+            d -= right;
+        }
+        else if (s[left] == '*' && s[right] == '.')
+        {
+            q2.push(right);
+            c += right;
+            q1.push(q2.front());
+            b += q2.front();
+            c -= q2.front();
+            q2.pop();
+            a += left;
         }
         else
         {
-            pre[i + 1] = pre[i];
+            d -= right;
+            a += left;
+            b += q2.front();
+            c -= q2.front();
+            q1.push(q2.front());
+            q2.pop();
         }
-    }
-    for (int i = n - 1; i >= 0; i--)
-    {
-        if (s[i] == '*')
-        {
-            post[i] = i + post[i + 1];
-            postc[i] = postc[i + 1] + 1;
-        }
-        else
-        {
-            postc[i] = postc[i + 1];
-        }
-    }
-    cerr << pre << '\n'
-         << prec << '\n'
-         << post << '\n'
-         << postc << '\n';
 
-    int window_sum = 0, window_count = 0;
-    int l = 0;
-    int r;
-    for (r = 0; r < sheep; r++)
-    {
-        if (s[r] == '*')
-        {
-            window_count++;
-            window_sum += r;
-        }
-    }
-    r--;
-    int ans = LONG_LONG_MAX;
-    while (r < n)
-    {
-        int calc = 0;
-        calc += prec[l] * l - pre[l];   // move all till left boundary
-        calc += post[r] - postc[r] * r; // move all till right boundry
-
-        int winl = l + prec[l];
-        int winr = r - postc[r];
-
-        int win_ideal = r * (r + 1) / 2 - l * (l - 1) / 2;
-        calc +=                                      
-        ans = min(ans, calc);
-        if (s[l] == '*')
-        {
-            window_count--;
-            window_sum -= l;
-        }
-        l++;
-        r++;
-        if (s[r] == '*')
-        {
-            window_count++;
-            window_sum += r;
-        }
+        left++;
+        right++;
+        ans = min(ans, d - c + b - a);
     }
     cout << ans << '\n';
 }
