@@ -1,39 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define rep(i, a, b) for (ll i = a; i < (b); ++i)
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
 #define all(x) begin(x), end(x)
-#define sz(x) (ll)(x).size()
+#define sz(x) (int)(x).size()
 typedef long long ll;
-typedef pair<ll, ll> pii;
-typedef vector<ll> vi;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
 typedef vector<long long> vll;
 
 #ifndef ONLINE_JUDGE
 #include "debugging.h"
 #endif
 
-vector<ll> digs(ll x)
+ll count(ll a)
 {
-    vector<ll> ret;
-    while (x)
+    if (a < 0)
     {
-        ret.push_back(x % 10);
-        x /= 10;
+        return 0;
     }
-    return ret;
-}
-
-ll solve(ll x)
-{
-    if (x == 0)
+    else if (a == 0)
     {
         return 1;
     }
-    vector<ll> digits = digs(x);
+
+    vector<int> digits;
+    while (a)
+    {
+        digits.push_back(a % 10);
+        a /= 10;
+    }
     reverse(digits.begin(), digits.end());
 
-    vector<vector<vector<ll>>> dp(digits.size(), vector<vector<ll>>(10, vector<ll>(2)));
-    for (ll i = 0; i < digits[0]; i++)
+    vector<vector<vector<ll>>> dp(digits.size(), vector<vector<ll>>(10, vector<ll>(2, 0)));
+    for (ll i = 1; i < digits[0]; i++)
     {
         dp[0][i][0] = 1;
     }
@@ -41,34 +40,38 @@ ll solve(ll x)
 
     for (ll i = 1; i < digits.size(); i++)
     {
+        for (ll j = 1; j < 10; j++)
+            dp[i][j][0]++;
         for (ll j = 0; j < 10; j++)
         {
-
             for (ll k = 0; k < 10; k++)
             {
                 if (j != k)
+                {
                     dp[i][k][0] += dp[i - 1][j][0];
+                }
             }
-            for (ll k = 0; k < digits[i]; k++)
+        }
+        for (ll j = 0; j < digits[i]; j++)
+        {
+            if (j != digits[i - 1])
             {
-                if (j != k)
-                    dp[i][k][0] += dp[i - 1][j][1];
+                dp[i][j][0] += dp[i - 1][digits[i - 1]][1];
             }
         }
         if (digits[i] != digits[i - 1])
-            dp[i][digits[i]][1] += dp[i - 1][digits[i - 1]][1];
-    }
-
-    ll ans = 0;
-    for (ll i = 0; i < 2; i++)
-    {
-        for (ll j = 0; j < 10; j++)
         {
-            ans += dp.back()[j][i];
+            dp[i][digits[i]][1] += dp[i - 1][digits[i - 1]][1];
         }
     }
 
-    return ans;
+    ll ans = 0;
+    for (ll i = 0; i < 10; i++)
+    {
+        ans += dp.back()[i][0];
+        ans += dp.back()[i][1];
+    }
+    return ans + 1;
 }
 
 int main()
@@ -78,13 +81,5 @@ int main()
 
     ll a, b;
     cin >> a >> b;
-
-    if (a == 0)
-    {
-        cout << solve(b);
-    }
-    else
-    {
-        cout << solve(b) - solve(a - 1);
-    }
+    cout << count(b) - count(a - 1) << '\n';
 }

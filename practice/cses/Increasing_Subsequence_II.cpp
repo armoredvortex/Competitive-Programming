@@ -12,96 +12,26 @@ typedef vector<long long> vll;
 #include "debugging.h"
 #endif
 
-#include <ext/pb_ds/tree_policy.hpp>
-#include <ext/pb_ds/assoc_container.hpp>
+const ll mod = 1e9 + 7;
 
-using namespace std;
-namespace __gnu_pbds
+void update(vector<ll> &fen, ll old, ll nw, ll i)
 {
-    typedef tree<int,
-                 null_type,
-                 less_equal<int>,
-                 rb_tree_tag,
-                 tree_order_statistics_node_update>
-        ordered_set;
-}
-using namespace __gnu_pbds;
-
-void Insert(ordered_set &s, int x)
-{ // this function inserts one more occurrence of (x) into the set.
-
-    s.insert(x);
-}
-
-bool Exist(ordered_set &s, int x)
-{ // this function checks weather the value (x) exists in the set or not.
-
-    if ((s.upper_bound(x)) == s.end())
+    while (i < fen.size())
     {
-        return 0;
-    }
-    return ((*s.upper_bound(x)) == x);
-}
-
-void Erase(ordered_set &s, int x)
-{ // this function erases one occurrence of the value (x).
-
-    if (Exist(s, x))
-    {
-        s.erase(s.upper_bound(x));
+        fen[i] = (fen[i] + nw - old) % mod;
+        i += (-i & i);
     }
 }
 
-int FirstIdx(ordered_set &s, int x)
-{ // this function returns the first index of the value (x)..(0 indexing).
-
-    if (!Exist(s, x))
+ll query(vector<ll> &fen, ll i)
+{
+    ll res = 0;
+    while (i)
     {
-        return -1;
+        res = (res + fen[i]) % mod;
+        i -= (-i & i);
     }
-    return (s.order_of_key(x));
-}
-
-int Value(ordered_set &s, int idx)
-{ // this function returns the value at the index (idx)..(0 indexing).
-
-    return (*s.find_by_order(idx));
-}
-
-int LastIdx(ordered_set &s, int x)
-{ // this function returns the last index of the value (x)..(0 indexing).
-
-    if (!Exist(s, x))
-    {
-        return -1;
-    }
-    if (Value(s, (int)s.size() - 1) == x)
-    {
-        return (int)(s.size()) - 1;
-    }
-    return FirstIdx(s, *s.lower_bound(x)) - 1;
-}
-
-int Count(ordered_set &s, int x)
-{ // this function returns the number of occurrences of the value (x).
-
-    if (!Exist(s, x))
-    {
-        return 0;
-    }
-    return LastIdx(s, x) - FirstIdx(s, x) + 1;
-}
-
-void Clear(ordered_set &s)
-{ // this function clears all the elements from the set.
-
-    s.clear();
-}
-
-int Size(ordered_set &s)
-{ // this function returns the size of the set.
-
-    return (int)(s.size());
+    return res;
 }
 
 int main()
@@ -112,17 +42,33 @@ int main()
     ll n;
     cin >> n;
     vll v(n);
+    set<ll> st;
     for (ll i = 0; i < n; i++)
     {
         cin >> v[i];
+        st.insert(v[i]);
     }
 
-    ordered_set st;
-    ll ans = 0;
-    for (auto e : v)
+    map<ll, ll> comp;
+    ll i = 1;
+    for (auto e : st)
     {
-        Insert(st, e);
-        ans += FirstIdx(st, e) + 1;
+        comp[e] = i;
+        i++;
+    }
+
+    vector<ll> fen(st.size() + 1, 0);
+    vector<ll> dp(n);
+    for (ll i = 0; i < n; i++)
+    {
+        dp[i] = (1 + query(fen, comp[v[i]] - 1)) % mod;
+        update(fen, fen[comp[v[i]]], fen[comp[v[i]]] + dp[i], comp[v[i]]);
+    }
+
+    ll ans = 0;
+    for (ll i = 0; i < dp.size(); i++)
+    {
+        ans = (ans + dp[i]) % mod;
     }
     cout << ans << '\n';
 }
